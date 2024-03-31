@@ -21,7 +21,7 @@ public class ElevensBoard extends Board {
      * The suits of the cards for this game to be sent to the deck.
      */
     private static final String[] SUITS =
-            {"spades", "hearts", "diamonds", "clubs"};
+            {"♠", "hearts", "diamonds", "clubs"};
 
     /**
      * The values of the cards for this game to be sent to the deck.
