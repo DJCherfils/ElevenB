@@ -4,7 +4,7 @@ import java.util.ArrayList;
 /**
  * The ElevensBoard class represents the board in a game of Elevens.
  */
-public class ElevensBoard extends Board {
+public class ElevensBoard{
 
     /**
      * The size (number of cards) on the board.
@@ -14,44 +14,114 @@ public class ElevensBoard extends Board {
     /**
      * The ranks of the cards for this game to be sent to the deck.
      */
-    private static final String[] RANKS =
-            {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
+    private static final String[] RANKS = {"A","10"};
 
+    //{"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     /**
      * The suits of the cards for this game to be sent to the deck.
      */
     private static final String[] SUITS =
-            {"♠", "hearts", "diamonds", "clubs"};
+            { "♠", "♥", "♦", "♣" };
 
     /**
      * The values of the cards for this game to be sent to the deck.
      */
     private static final int[] POINT_VALUES =
-            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0};
-
+            {1, 10};
+//{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0};
     /**
      * Flag used to control debugging print statements.
      */
     private static final boolean I_AM_DEBUGGING = false;
 
-
+    private Card[] cards;
+    private Deck deck;
     /**
      * Creates a new <code>ElevensBoard</code> instance.
      */
     public ElevensBoard() {
-        super(BOARD_SIZE, RANKS, SUITS, POINT_VALUES);
+        cards = new Card[BOARD_SIZE];
+        deck = new Deck(RANKS, SUITS, POINT_VALUES);
+        if (I_AM_DEBUGGING){
+            System.out.println(deck);
+            System.out.println("---------------");
+        }
+        deck.shuffle();
+        dealMyCards();
     }
 
-    /**
-     * Determines if the selected cards form a valid group for removal.
-     * In Elevens, the legal groups are (1) a pair of non-face cards
-     * whose values add to 11, and (2) a group of three cards consisting of
-     * a jack, a queen, and a king in some order.
-     * @param selectedCards the list of the indices of the selected cards.
-     * @return true if the selected cards form a valid group for removal;
-     *         false otherwise.
-     */
-    @Override
+    public void newGame(){
+        deck.shuffle();
+        dealMyCards();
+    }
+
+    public int size(){
+        return cards.length;
+    }
+
+    public boolean isEmpty(){
+        for(int k = 0; k < cards.length; k ++){
+            if(cards[k] != null){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void deal(int k){
+        cards[k] = deck.deal();
+    }
+
+    public int deckSize(){
+        return deck.size();
+    }
+
+    public Card cardAt(int k){
+        return cards[k];
+    }
+
+    public void replaceSelectedCards(List<Integer> selectedCards){
+        for(Integer k : selectedCards){
+            deal(k.intValue());
+        }
+    }
+
+    public List<Integer> cardIndexes(){
+        List<Integer> selected = new ArrayList<Integer>();
+        for(int k = 0; k < cards.length; k++){
+            if(cards[k] != null){
+                selected.add(k);
+            }
+        }
+        return selected;
+    }
+
+    public String toString(){
+        String s = " ";
+        for(int i = 0; i < cards.length; i++){
+            s += (i + 1)+ "   ";
+        }
+        s +="\n";
+        for(int k = 0; k < cards.length; k++){
+            s = s + cards[k] + " ";
+        }
+        s += "\n";
+
+        return s;
+    }
+
+    public boolean gameIsWon(){
+        if(deck.isEmpty()){
+            for(Card c: cards){
+                if(c != null){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public boolean isLegal(List<Integer> selectedCards) {
         if (selectedCards.size() == 2) {
             return containsPairSum11(selectedCards);
@@ -70,10 +140,15 @@ public class ElevensBoard extends Board {
      * @return true if there is a legal play left on the board;
      *         false otherwise.
      */
-    @Override
     public boolean anotherPlayIsPossible() {
         List<Integer> cIndexes = cardIndexes();
         return containsPairSum11(cIndexes) || containsJQK(cIndexes);
+    }
+
+    private void dealMyCards(){
+        for(int k = 0; k < cards.length; k++){
+            cards[k] = deck.deal();
+        }
     }
 
     /**
@@ -111,11 +186,11 @@ public class ElevensBoard extends Board {
         boolean foundKing = false;
         for (Integer kObj : selectedCards) {
             int k = kObj.intValue();
-            if (cardAt(k).rank().equals("jack")) {
+            if (cardAt(k).rank().equals("J")) {
                 foundJack = true;
-            } else if (cardAt(k).rank().equals("queen")) {
+            } else if (cardAt(k).rank().equals("Q")) {
                 foundQueen = true;
-            } else if (cardAt(k).rank().equals("king")) {
+            } else if (cardAt(k).rank().equals("K")) {
                 foundKing = true;
             }
         }

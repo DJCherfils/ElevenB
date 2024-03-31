@@ -16,7 +16,7 @@ public class Main {
 //    }
     public static void main(String[] args) {
         ElevensBoard board = new ElevensBoard();
-        System.out.print("Welcome to Eleven!");
+        System.out.println("Welcome to Eleven!");
         System.out.println(board.deckSize() + " Undealt cards remaining");
         while(!board.gameIsWon()){
             System.out.println("Here's your cards: ");
@@ -25,7 +25,7 @@ public class Main {
             int size = 0;
             String[] inAr = null;
             while((size!=3) && (size!=2)){
-                System.out.println("Enter two or three cards to remove: ");
+                System.out.print("Enter two or three cards to remove: ");
                 inAr = sc.nextLine().split(" ");
                 size = inAr.length;
             }
@@ -49,7 +49,4 @@ public class Main {
             System.out.println("You Won!");
         }
     }
-
-
-
 }
